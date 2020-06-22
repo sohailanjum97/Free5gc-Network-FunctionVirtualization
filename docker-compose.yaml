@@ -1,0 +1,216 @@
+version: '3.6'
+
+services:
+  upf:
+    container_name: upf
+    build:
+      context: ./upf
+      args:
+        DEBUG_TOOLS: "false"
+    command: "/go/src/free5gc/src/upf/build/bin/free5gc-upfd -f /go/src/free5gc/src/upf/build/config/upfcfg1.yaml"
+    volumes:
+      - "./upfcfg1.yaml:/go/src/free5gc/src/upf/build/config/upfcfg1.yaml"
+    cap_add:
+      - NET_ADMIN
+    networks:
+      privnet:
+        aliases:
+          - upf
+  nrf:
+    container_name: nrf
+    build: 
+      context: ./nrf
+      args:
+        DEBUG_TOOLS: "false"
+    command: /go/src/free5gc/bin/nrf -nrfcfg /go/src/free5gc/config/nrfcfg.conf
+    volumes:
+    - ./nrfcfg.conf:/go/src/free5gc/config/nfrcfg.conf
+    - ./free5GC.conf:/go/src/free5gc/config/free5gc.conf
+    expose:
+      - "29513"
+    environment:
+      DB_URI: mongodb://db/free5gc
+      GIN_MODE: release
+    networks:
+      privnet:
+        aliases:
+          - nrf
+    depends_on:
+      - db
+  
+  db:
+    container_name: mongodb
+    image: mongo
+    command: mongod --port 27017
+    expose:
+      - "27017"
+    volumes:
+      - dbdata:/data/db
+    networks:
+      privnet:
+        aliases:
+          - db
+
+  amf:
+    container_name: amf
+    build:
+      context: ./amf
+      args:
+        DEBUG_TOOLS: "false"
+    command: /go/src/free5gc/bin/amf -amfcfg /go/src/free5gc/config/amfcfg.conf
+    expose:
+      - "29511"
+    volumes:
+      - ./amfcfg.conf:/go/src/free5gc/config/amfcfg.conf
+      - ./free5GC.conf:/go/src/free5gc/config/free5GC.conf
+    environment:
+      GIN_MODE: release
+    networks:
+      privnet:
+        aliases:
+          - amf
+    depends_on:
+      - nrf
+
+  ausf:
+    container_name: ausf
+    build:
+      context: ./ausf
+      args:
+        DEBUG_TOOLS: "false"
+    command: /go/src/free5gc/bin/ausf -ausfcfg /go/src/free5gc/config/ausfcfg.conf
+    expose:
+      - "29512"
+    volumes:
+      - ./ausfcfg.conf:/go/src/free5gc/config/ausfcfg.conf
+      - ./free5GC.conf:/go/src/free5gc/config/free5GC.conf
+    environment:
+      GIN_MODE: release
+    networks:
+      privnet:
+        aliases:
+          - ausf
+    depends_on:
+      - nrf
+  
+  nssf:
+    container_name: nssf
+    build:
+      context: ./nssf
+      args:
+        DEBUG_TOOLS: "false"
+    command: /go/src/free5gc/bin/nssf -nssfcfg /go/src/free5gc/config/nssfcfg.conf
+    expose:
+      - "29514"
+    volumes:
+      - ./nssfcfg.conf:/go/src/free5gc/config/nssfcfg.conf
+      - ./free5GC.conf:/go/src/free5gc/config/free5GC.conf
+    environment:
+      GIN_MODE: release
+    networks:
+      privnet:
+        aliases:
+          - nssf
+    depends_on:
+      - nrf
+
+  pcf:
+    container_name: pcf
+    build:
+      context: ./pcf
+      args:
+        DEBUG_TOOLS: "false"
+    command: /go/src/free5gc/bin/pcf -pcfcfg /go/src/free5gc/config/pcfcfg.conf
+    expose:
+      - "29515"
+    volumes:
+      - ./pcfcfg.conf:/go/src/free5gc/config/pcfcfg.conf
+      - ./free5GC.conf:/go/src/free5gc/config/free5GC.conf
+    environment:
+      GIN_MODE: release
+    networks:
+      privnet:
+        aliases:
+          - pcf
+    depends_on:
+      - nrf
+
+  smf:
+    container_name: smf
+    build:
+      context: ./smf
+      args:
+        DEBUG_TOOLS: "false"
+    command: /go/src/free5gc/bin/smf -smfcfg /go/src/free5gc/config/smfcfg.conf -uerouting /go/src/free5gc/config/uerouting.yaml
+    expose:
+      - "29516"
+    volumes:
+      - ./config/smfcfg.conf:/free5gc/config/smfcfg.conf
+      - ./config/uerouting.yaml:/free5gc/config/uerouting.yaml
+      - ./config/free5GC.conf:/free5gc/config/free5GC.conf
+    environment:
+      GIN_MODE: release
+    networks:
+      privnet:
+        aliases:
+          - smf
+    depends_on:
+      - nrf
+      - upf
+
+  udm:
+    container_name: udm
+    build:
+      context: ./udm
+      args:
+        DEBUG_TOOLS: "false"
+        command: /go/src/free5gc/bin/udm -udmcfg /go/src/free5gc/config/udmcfg.conf
+    expose:
+      - "29517"
+    volumes:
+      - ./config/udmcfg.conf:/free5gc/config/udmcfg.conf
+      - ./config/free5GC.conf:/free5gc/config/free5GC.conf
+    environment:
+      GIN_MODE: release
+    networks:
+      privnet:
+        aliases:
+          - udm
+    depends_on:
+      - nrf
+      - db
+
+  udr:
+    container_name: udr
+    build:
+      context: ./udr
+      args:
+        DEBUG_TOOLS: "false"
+        command: /go/src/free5gc/bin/udr -udrcfg /go/src/free5gc/config/udrcfg.conf
+    expose:
+      - "29518"
+    volumes:
+      - ./config/udrcfg.conf:/free5gc/config/udrcfg.conf
+      - ./config/free5GC.conf:/free5gc/config/free5GC.conf
+    environment:
+      DB_URI: mongodb://db/free5gc
+      GIN_MODE: release
+    networks:
+      privnet:
+        aliases:
+          - udr
+    depends_on:
+      - nrf
+      - db
+
+
+networks:
+  privnet:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.100.200.0/24
+        - gateway: 10.100.200.254
+
+volumes:
+  dbdata:
