@@ -4,32 +4,32 @@ info:
 
 ueRoutingInfo:
   - SUPI: imsi-2089300007487
-    AN: upf1
+    AN: upf
     PathList:
-      - DestinationIP: 10.0.0.10
+      - DestinationIP: 10.0.2.15
         DestinationPort: 8888
         UPF: !!seq
           - BranchingUPF
           - AnchorUPF1
 
-      - DestinationIP: 10.0.0.11
+      - DestinationIP: 10.0.2.15
         DestinationPort: 9999
         UPF: !!seq
           - BranchingUPF
           - AnchorUPF2
 
-  - SUPI: imsi-2089300007486
-    AN: upf2
-    PathList:
-      - DestinationIP: 10.0.0.10
-        DestinationPort: 8888
-        UPF: !!seq
-          - BranchingUPF
-          - AnchorUPF1
+  #- SUPI: imsi-2089300007486
+  #  AN: upf2
+  #  PathList:
+  #    - DestinationIP: 10.0.2.15
+  #      DestinationPort: 8888
+  #      UPF: !!seq
+  #        - BranchingUPF
+  #        - AnchorUPF1
 
-      - DestinationIP: 10.0.0.11
-        DestinationPort: 9999
-        UPF: !!seq
-          - BranchingUPF
-          - AnchorUPF2
+  #    - DestinationIP: 10.0.2.15
+  #      DestinationPort: 9999
+  #      UPF: !!seq
+  #        - BranchingUPF
+  #        - AnchorUPF2
 
