@@ -7,10 +7,10 @@ configuration:
   debugLevel: info
 
   pfcp:
-    - addr: upf-1
+    - addr: upf
 
   gtpu:
-    - addr: upf-2
+    - addr: upf-3
     # [optional] gtpu.name
     # - name: upf.5gc.nctu.me
     # [optional] gtpu.ifname

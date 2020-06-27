@@ -9,7 +9,7 @@ services:
         DEBUG_TOOLS: "false"
     command: "/go/src/free5gc/src/upf/build/bin/free5gc-upfd -f /go/src/free5gc/src/upf/build/config/upfcfg1.yaml"
     volumes:
-      - "./upfcfg1.yaml:/go/src/free5gc/src/upf/build/config/upfcfg1.yaml"
+      - "./upfcfg-conf:/go/src/free5gc/src/upf/build/config"
     cap_add:
       - NET_ADMIN
     networks:
@@ -24,8 +24,8 @@ services:
         DEBUG_TOOLS: "false"
     command: /go/src/free5gc/bin/nrf -nrfcfg /go/src/free5gc/config/nrfcfg.conf
     volumes:
-    - ./nrfcfg.conf:/go/src/free5gc/config/nfrcfg.conf
-    - ./free5GC.conf:/go/src/free5gc/config/free5gc.conf
+    - ./nrfcfg-conf:/go/src/free5gc/config/:rw
+    #- ./free5GC.conf:/go/src/free5gc/config/free5gc.conf:rw
     expose:
       - "29513"
     environment:
@@ -61,8 +61,8 @@ services:
     expose:
       - "29511"
     volumes:
-      - ./amfcfg.conf:/go/src/free5gc/config/amfcfg.conf
-      - ./free5GC.conf:/go/src/free5gc/config/free5GC.conf
+      - ./amfcfg-conf:/go/src/free5gc/config
+      #- ./free5GC.conf:/go/src/free5gc/config/free5GC.conf
     environment:
       GIN_MODE: release
     networks:
@@ -82,8 +82,8 @@ services:
     expose:
       - "29512"
     volumes:
-      - ./ausfcfg.conf:/go/src/free5gc/config/ausfcfg.conf
-      - ./free5GC.conf:/go/src/free5gc/config/free5GC.conf
+      - ./ausfcfg-conf:/go/src/free5gc/config
+      #- ./free5GC.conf:/go/src/free5gc/config/free5GC.conf
     environment:
       GIN_MODE: release
     networks:
@@ -103,8 +103,8 @@ services:
     expose:
       - "29514"
     volumes:
-      - ./nssfcfg.conf:/go/src/free5gc/config/nssfcfg.conf
-      - ./free5GC.conf:/go/src/free5gc/config/free5GC.conf
+      - ./nssfcfg-conf:/go/src/free5gc/config
+      #- ./free5GC.conf:/go/src/free5gc/config/free5GC.conf
     environment:
       GIN_MODE: release
     networks:
@@ -124,8 +124,8 @@ services:
     expose:
       - "29515"
     volumes:
-      - ./pcfcfg.conf:/go/src/free5gc/config/pcfcfg.conf
-      - ./free5GC.conf:/go/src/free5gc/config/free5GC.conf
+      - ./pcfcfg-conf:/go/src/free5gc/config
+      #- ./free5GC.conf:/go/src/free5gc/config/free5GC.conf
     environment:
       GIN_MODE: release
     networks:
@@ -145,9 +145,9 @@ services:
     expose:
       - "29516"
     volumes:
-      - ./config/smfcfg.conf:/free5gc/config/smfcfg.conf
-      - ./config/uerouting.yaml:/free5gc/config/uerouting.yaml
-      - ./config/free5GC.conf:/free5gc/config/free5GC.conf
+      - ./smfcfg-conf:/go/src/free5gc/config
+      #- ./config/uerouting.yaml:/free5gc/config/uerouting.yaml
+      #- ./config/free5GC.conf:/free5gc/config/free5GC.conf
     environment:
       GIN_MODE: release
     networks:
@@ -168,8 +168,8 @@ services:
     expose:
       - "29517"
     volumes:
-      - ./config/udmcfg.conf:/free5gc/config/udmcfg.conf
-      - ./config/free5GC.conf:/free5gc/config/free5GC.conf
+      - ./udmcfg-conf:/go/src/free5gc/config
+      #- ./config/free5GC.conf:/free5gc/config/free5GC.conf
     environment:
       GIN_MODE: release
     networks:
@@ -190,8 +190,8 @@ services:
     expose:
       - "29518"
     volumes:
-      - ./config/udrcfg.conf:/free5gc/config/udrcfg.conf
-      - ./config/free5GC.conf:/free5gc/config/free5GC.conf
+      - ./udrcfg-conf:/go/src/free5gc/config
+      #- ./config/free5GC.conf:/free5gc/config/free5GC.conf
     environment:
       DB_URI: mongodb://db/free5gc
       GIN_MODE: release
@@ -209,8 +209,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 10.100.200.0/24
-        - gateway: 10.100.200.254
+        - subnet: 10.100.200.1/24
 
 volumes:
   dbdata:
